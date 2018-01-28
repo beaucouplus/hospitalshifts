@@ -13,13 +13,12 @@ def define_shift_fee(shifts,worker)
   worker_shifts = shifts.select { |shift| shift["user_id"] == worker["id"] }
   shift_fee = worker_shifts.count
   double_pay_shifts = worker_shifts.select do |shift|
-    shift_time = Time.parse(shift["start_date"]).wday
-    # [0,6] = positions of sunday and saturday in wday array
-    [0,6].include?(shift_time)
+    shift_time = Time.parse(shift["start_date"])
+    shift_time.saturday? || shift_time.sunday?
   end.count
   shift_fee += double_pay_shifts
+  pp shift_fee
 end
-
 
 night_shift = workers.each_with_object({"workers" => []}) do |worker, night_shift|
   shift_number = define_shift_fee(shifts,worker)
