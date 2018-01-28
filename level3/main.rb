@@ -17,7 +17,6 @@ def define_shift_fee(shifts,worker)
     shift_time.saturday? || shift_time.sunday?
   end.count
   shift_fee += double_pay_shifts
-  pp shift_fee
 end
 
 night_shift = workers.each_with_object({"workers" => []}) do |worker, night_shift|
