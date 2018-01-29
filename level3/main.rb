@@ -19,14 +19,14 @@ def define_shift_fee(shifts,worker)
   shift_fee += double_pay_shifts
 end
 
-night_shift = workers.each_with_object({"workers" => []}) do |worker, night_shift|
+night_shift = workers.each_with_object({"workers" => []}) do |worker, shift|
   shift_number = define_shift_fee(shifts,worker)
   total_price = shift_number * status[worker["status"].to_sym]
-  night_shift["workers"] << { "id": worker["id"], "price": total_price }
+  shift["workers"] << { "id": worker["id"], "price": total_price }
 end
 
 
 
 
 # created a new json file in order to leave the example file.
-File.open("night_shifts.json", 'w+'){ |file| file.write(night_shift.to_json)}
+File.open("night_shifts.json", 'w+'){ |json| json.write(night_shift.to_json)}
