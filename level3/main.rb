@@ -9,7 +9,7 @@ shifts = data["shifts"]
 workers = data["workers"]
 status = { medic: 270, interne: 126 }
 
-def define_shift_fee(shifts,worker)
+def define_shift_number(shifts,worker)
   worker_shifts = shifts.select { |shift| shift["user_id"] == worker["id"] }
   shift_fee = worker_shifts.count
   double_pay_shifts = worker_shifts.select do |shift|
@@ -20,7 +20,7 @@ def define_shift_fee(shifts,worker)
 end
 
 night_shift = workers.each_with_object({"workers" => []}) do |worker, shift|
-  shift_number = define_shift_fee(shifts,worker)
+  shift_number = define_shift_number(shifts,worker)
   total_price = shift_number * status[worker["status"].to_sym]
   shift["workers"] << { "id": worker["id"], "price": total_price }
 end
