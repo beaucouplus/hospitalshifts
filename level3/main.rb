@@ -11,12 +11,12 @@ status = { medic: 270, interne: 126 }
 
 def define_shift_number(shifts,worker)
   worker_shifts = shifts.select { |shift| shift["user_id"] == worker["id"] }
-  shift_fee = worker_shifts.count
+  shift_number = worker_shifts.count
   double_pay_shifts = worker_shifts.select do |shift|
     shift_time = Time.parse(shift["start_date"])
     shift_time.saturday? || shift_time.sunday?
   end.count
-  shift_fee += double_pay_shifts
+  shift_number += double_pay_shifts
 end
 
 night_shift = workers.each_with_object({"workers" => []}) do |worker, shift|
@@ -29,4 +29,4 @@ end
 
 
 # created a new json file in order to leave the example file.
-File.open("night_shifts.json", 'w+'){ |json| json.write(night_shift.to_json)}
+File.open("night_shifts.json", 'w+'){ |json| json.write(JSON.pretty_generate(@night_shift))}

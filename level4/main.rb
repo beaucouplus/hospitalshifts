@@ -2,20 +2,29 @@ require "json"
 require "pp"
 require 'time'
 
+def import_data(data)
+  begin
+    file = File.read(data)
+  rescue
+    raise ArgumentError.new("No data loaded, don't forget to load a file") if !file
+  end
+  JSON.parse(file)
+end
+
 class Hospital_shifts
 
   def initialize
-    file = File.read("data.json")
-    data = JSON.parse(file)
-    @shifts = data["shifts"]
-    @workers = data["workers"]
+    @data = import_data("data.json")
+    @shifts = @data["shifts"]
+    @workers = @data["workers"]
     @status = { medic: 270, interne: 126, interim: 480 }
   end
 
   def perform
+    check_data_validity
     @night_shift = calculate_night_shift_prices
     define_commission
-    create_json
+    File.open("night_shifts.json", 'w+'){ |json| json.write(JSON.pretty_generate(@night_shift)) }
   end
 
   private
@@ -51,11 +60,57 @@ class Hospital_shifts
     shift_number += double_pay_shifts
   end
 
-  def create_json
-    File.open("night_shifts.json", 'w+'){ |json| json.write(@night_shift.to_json)}
+  def check_data_validity
+    raise ShiftsError.new('No shifts data') if !@shifts || @shifts.empty?
+    raise ShiftsError.new('No workers data') if !@workers || @workers.empty?
+
+    check_if_wrong_class
+    check_if_time_values_ok
+    check_if_overlap
+  end
+
+  def check_if_overlap
+    overlaps = @shifts.group_by{ |shift| shift["start_date"] }
+    overlaps = overlaps.select { |date,values| overlaps[date].size > 1 }.flatten
+    overlap_message = "Detected overlapping : #{overlaps.size} shifts cannot happen the same day."
+    raise ShiftsError.new(overlap_message) if !overlaps.empty?
+  end
+
+
+  def check_if_wrong_class
+    worker_classes = ["Integer","String","String"]
+    shifts_classes = ["Integer","Integer","Integer","String"]
+    check_classes(@workers,worker_classes,"Workers")
+    check_classes(@shifts,shifts_classes,"Shifts")
+  end
+
+  def check_classes(list,valid_classes,list_name)
+    list.each do |list_data|
+      counter = 0
+      list_data.each do |key,value|
+        wrong_class = "#{list_name} ##{list_data["id"]} : Value #{key}:#{value} should be #{valid_classes[counter]} but is #{value.class}"
+        raise ShiftsError.new(wrong_class) if value.class.to_s != valid_classes[counter]
+        counter += 1
+      end
+    end
+  end
+
+  def check_if_time_values_ok
+    @shifts.each do |shift|
+      begin
+        Time.parse(shift["start_date"])
+      rescue => e
+        raise ShiftsError.new("Incorrect date : #{shift["start_date"]} in shift n° #{shift["id"]}")
+      end
+    end
   end
 
 end
 
+class Hospital_shifts::ShiftsError < StandardError
+  def initialize(msg="Shifts data seems to be invalid. Please check.")
+    super
+  end
+end
 
 Hospital_shifts.new.perform

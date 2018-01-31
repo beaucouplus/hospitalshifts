@@ -15,4 +15,4 @@ night_shift = workers.each_with_object({"workers" => []}) do |worker, shift_hash
 end
 
 # created a new json file in order to leave the example file.
-File.open("night_shifts.json", 'w+'){ |json| json.write(night_shift.to_json)}
+File.open("night_shifts.json", 'w+'){ |json| json.write(JSON.pretty_generate(@night_shift))}
