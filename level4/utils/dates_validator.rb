@@ -1,6 +1,8 @@
 class DatesValidator
 
   def initialize(array,hash_key)
+    message = "Arguments should be an array and Hash Key (string)"
+    raise ArgumentError.new(message) unless array.is_a?(Array) && hash_key.is_a?(String) || hash_key.is_a?(Symbol)
     @array = array
     @hash_key = hash_key
   end

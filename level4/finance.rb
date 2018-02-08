@@ -4,13 +4,15 @@ class Finance
   attr_accessor :night_shifts, :fees
 
   def initialize(nightshifts)
+    object_message = "should be an instance of NightShift"
+    raise ArgumentError.new(object_message) unless nightshifts.is_a?(NightShifts)
     @night_shifts = nightshifts
     @interim_fee = 80
     @fees = @night_shifts.perform
   end
 
   def perform
-    @fees["commission"] = { "pdg_fee": commission, "interim": interim_hours }
+    @fees["commission"] = { "pdg_fee": commission, "interim_shifts": interim_hours }
     @fees
   end
 

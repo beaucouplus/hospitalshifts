@@ -10,19 +10,29 @@ require_relative 'utils/json_schema_validator'
 require_relative 'utils/object_creator'
 require_relative 'worker'
 
-json = ImportData.new("data/data.json").perform
+def validate_json(json_file)
+  json = ImportData.new(json_file).perform
+  schema = {
+    "workers" => [{"id"=>1, "first_name"=>"Julie", "status"=>"medic"}],
+    "shifts"  => [{"id"=>1, "planning_id"=>1, "user_id"=>1, "start_date"=>"2017-1-1"}]
+  }
+  JsonSchemaValidator.new(json,schema).perform
+  DatesValidator.new(json["shifts"],"start_date").perform
+  json
+end
 
-schema = {
-  "workers" => [{"id"=>1, "first_name"=>"Julie", "status"=>"medic"}],
-  "shifts"  => [{"id"=>1, "planning_id"=>1, "user_id"=>1, "start_date"=>"2017-1-1"}]
-}
+def create_json_output(json)
+  workers = ObjectCreator.new(json["workers"],Worker).perform
+  shifts = ObjectCreator.new(json["shifts"],Shift).perform
+  night_shifts = NightShifts.new(workers,shifts)
+  finance = Finance.new(night_shifts).perform
+end
 
-JsonSchemaValidator.new(json,schema).perform
-DatesValidator.new(json["shifts"],"start_date").perform
+def run_program
+  valid_json = validate_json("data/data.json")
+  json_output = create_json_output(valid_json)
+  File.open("data/night_shifts.json", 'w+'){ |json| json.write(JSON.pretty_generate(json_output))}
+  puts "Night Shifts json successfully created" if File.exist?("data/night_shifts.json")
+end
 
-workers = ObjectCreator.new(json["workers"],Worker).perform
-shifts = ObjectCreator.new(json["shifts"],Shift).perform
-
-night_shifts = NightShifts.new(workers,shifts)
-finance = Finance.new(night_shifts)
-File.open("night_shifts.json", 'w+'){ |json| json.write(JSON.pretty_generate(finance.perform))}
+run_program
