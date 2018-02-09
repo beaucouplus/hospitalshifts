@@ -1,2 +1,32 @@
-<h1>Workers#index</h1>
-<p>Find me in app/views/workers/index.html.erb</p>
+<div class="container">
+  <div class="row mt-5 align-items-top justify-content-center">
+    <div class="col-12">
+      <h1 class="text-center mb-5">Workers</h1>
+    </div>
+    <div class="col-4">
+      <%= render 'new' %>
+    </div>
+    <div class="col-8">
+      <table class="table table-hover">
+        <thead class="bg-primary text-white">
+          <tr>
+            <th>#</th>
+            <th>First Name</th>
+            <th>Status</th>
+            <th>Edit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @workers.each do |worker| %>
+            <tr>
+              <th>#<%= worker.id %></th>
+              <td><%= worker.first_name %></td>
+              <td><%= worker.status %></td>
+              <td>Edit</td>
+            </tr>
+          <% end  %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

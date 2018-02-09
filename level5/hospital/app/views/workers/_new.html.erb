@@ -1,0 +1,24 @@
+<div class="card">
+  <div class="card-header bg-primary text-white"><strong>Add worker</strong></div>
+  <div class="card-body">
+    <div class="form-row align-items-end">
+      <div class="col-7">
+        <%= form_for(@worker, url: workers_path, :html => {:class => 'form_inline'}) do |f| %>
+          <%= f.label :first_name %>
+          <%= f.text_field :first_name, class: 'form-control' %>
+          <div>
+          </div>
+        </div>
+        <div class="col-5">
+          <%= f.label :status %>
+          <%= select_tag 'worker[status]', options_for_select(Worker::STATUSES), class: 'form-control'  %>
+        </div>
+      </div>
+      <div class="form-row align-items-end">
+        <div class="col-12 mt-3">
+          <%= f.submit "Créer", class: "btn btn-light btn-lg btn-block" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
