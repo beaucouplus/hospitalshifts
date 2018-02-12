@@ -1,2 +1,44 @@
-<h1>Workers#edit</h1>
-<p>Find me in app/views/workers/edit.html.erb</p>
+<div class="container">
+  <div class="row mt-5 align-items-top justify-content-center">
+    <div class="col-12">
+      <h1 class="text-center mb-5">Edit worker</h1>
+    </div>
+    <div class="col-4">
+      <div class="card">
+        <div class="card-header bg-primary text-white"><strong>Worker</strong></div>
+        <div class="card-body">
+          <ul>
+            <li>Name: <%= @worker.first_name %></li>
+            <li>Status: <%= @worker.status %></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-8">
+      <div class="card">
+        <div class="card-header bg-primary text-white"><strong>Edit Worker</strong></div>
+        <div class="card-body">
+          <div class="form-row align-items-end">
+            <div class="col-7">
+              <%= form_for(@worker, url: worker_path, :html => {:class => 'form_inline'}) do |f| %>
+                <%= f.label :first_name %>
+                <%= f.text_field :first_name, class: 'form-control' %>
+                <div>
+                </div>
+              </div>
+              <div class="col-5">
+                <%= f.label :status %>
+                <%= select_tag 'worker[status]', options_for_select(Worker::STATUSES), class: 'form-control'  %>
+              </div>
+            </div>
+            <div class="form-row align-items-end">
+              <div class="col-12 mt-3">
+                <%= f.submit "Update", class: "btn btn-light btn-lg btn-block" %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

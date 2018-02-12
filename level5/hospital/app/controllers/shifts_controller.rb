@@ -1,14 +1,11 @@
 class ShiftsController < ApplicationController
-  def new
-    @shift = Shift.new
-    @statuses = ["medic","interne","interim"]
-  end
 
   def create
     @shift = Shift.new(shift_params)
     if @shift.save
       respond_to do |format|
         format.html { redirect_to shifts_path }
+        flash[:success] = "Planning updated successfully"
       end
     else
       respond_to do |format|
@@ -23,6 +20,7 @@ class ShiftsController < ApplicationController
   end
 
   def index
+    @shift = Shift.new
     @shifts = Shift.all
   end
 
@@ -43,9 +41,7 @@ class ShiftsController < ApplicationController
   private
 
   def shift_params
-    params.require(:shift).permit(:start_date)
+    params.require(:shift).permit(:start_date,:worker_id)
   end
-
-
 
 end

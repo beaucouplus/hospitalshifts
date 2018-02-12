@@ -1,13 +1,11 @@
 class WorkersController < ApplicationController
 
-  def new
-    @worker = Worker.new
-  end
-
   def create
     @worker = Worker.new(worker_params)
+    @worker[:first_name].downcase
     if @worker.save
       respond_to do |format|
+        flash[:success] = "Worker #{@worker.first_name} successfully created"
         format.html { redirect_to workers_path }
       end
     else
@@ -18,9 +16,6 @@ class WorkersController < ApplicationController
     end
   end
 
-  def show
-    @worker = Worker.find(params[:id])
-  end
 
   def index
     @worker = Worker.new
@@ -35,7 +30,7 @@ class WorkersController < ApplicationController
     @worker = Worker.find(params[:id])
     if @worker.update_attributes(worker_params)
       flash[:success] = "Worker edited successfully"
-      redirect_to @worker
+      redirect_to workers_path
     else
       render 'edit'
     end

@@ -1,2 +1,31 @@
-<h1>Shifts#index</h1>
-<p>Find me in app/views/shifts/index.html.erb</p>
+<div class="container">
+  <div class="row mt-5 align-items-top justify-content-center">
+    <div class="col-12">
+      <h1 class="text-center mb-5">Shifts</h1>
+    </div>
+    <div class="col-4">
+      <%= render 'new' %>
+    </div>
+    <div class="col-8">
+      <table class="table table-hover">
+        <thead class="bg-primary text-white">
+          <tr>
+            <th>#</th>
+            <th>First Name</th>
+            <th>Start Date</th>
+            <th>Edit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @shifts.each do |shift| %>
+            <tr>
+              <th>#<%= shift.id %></th>
+              <td><%= shift.worker.first_name.capitalize %></td>
+              <td><%= shift.start_date %></td>
+            </tr>
+          <% end  %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
