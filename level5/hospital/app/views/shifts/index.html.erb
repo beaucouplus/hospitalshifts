@@ -10,7 +10,6 @@
       <table class="table table-hover">
         <thead class="bg-primary text-white">
           <tr>
-            <th>#</th>
             <th>First Name</th>
             <th>Start Date</th>
           </tr>
@@ -18,7 +17,6 @@
         <tbody>
           <% @shifts.each do |shift| %>
             <tr>
-              <th>#<%= shift.id %></th>
               <td><%= shift.worker.first_name.capitalize %></td>
               <td><%= shift.start_date %></td>
             </tr>

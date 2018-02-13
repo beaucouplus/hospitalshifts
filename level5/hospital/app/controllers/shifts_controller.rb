@@ -17,7 +17,7 @@ class ShiftsController < ApplicationController
 
   def index
     @shift = Shift.new
-    @shifts = Shift.all
+    @shifts = Shift.order(:start_date)
   end
 
   private

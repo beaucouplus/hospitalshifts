@@ -19,7 +19,7 @@ class WorkersController < ApplicationController
 
   def index
     @worker = Worker.new
-    @workers = Worker.all
+    @workers = Worker.order(:id)
   end
 
   def edit
