@@ -31,14 +31,16 @@ class WorkersControllerTest < ActionDispatch::IntegrationTest
         worker: { first_name: "Gérard", status: "medic" }
       }
     end
+    assert flash[:success]
     assert_redirected_to workers_path
   end
 
-  test "should fail to create reservation and redirect to same page or root path" do
+  test "should fail to create worker and redirect to index" do
     post workers_path, params: {
       worker: { first_name: "Gérard", status: "plumber" }
     }
-    assert_redirected_to root_path
+    assert flash[:worker_errors]
+    assert_redirected_to workers_path
   end
 
   test "should edit worker and get redirected to index" do
@@ -50,13 +52,15 @@ class WorkersControllerTest < ActionDispatch::IntegrationTest
     worker = Worker.find(@worker.id)
     assert_equal new_first_name, worker.first_name
     assert_equal new_status, worker.status
-    assert_redirected_to workers_path
+    assert flash[:success]
+    assert_redirected_to edit_worker_path(@worker)
   end
 
   test "should fail to edit worker and rerender edit" do
     put worker_path(@worker), params: {
       worker: { id: @worker.id, first_name: nil, status: "medic" }
     }
+    assert flash[:worker_errors]
     assert_response 200
     assert_includes @response.body, "Edit worker"
     assert_includes @response.body, @worker.status

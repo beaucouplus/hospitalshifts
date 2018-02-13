@@ -11,7 +11,7 @@ class WorkersController < ApplicationController
     else
       respond_to do |format|
         flash[:worker_errors] = @worker.errors.messages
-        format.html { redirect_back(fallback_location: root_path) }
+        format.html { redirect_to workers_path }
       end
     end
   end
@@ -30,8 +30,9 @@ class WorkersController < ApplicationController
     @worker = Worker.find(params[:id])
     if @worker.update_attributes(worker_params)
       flash[:success] = "Worker edited successfully"
-      redirect_to workers_path
+      redirect_to edit_worker_path(params[:id])
     else
+      flash[:worker_errors] = @worker.errors.messages
       render 'edit'
     end
   end
